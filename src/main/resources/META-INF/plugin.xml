@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>1.1</id>
+    <id>to-go-struct</id>
     <name>Convent JSON/SQL to GO Struct</name>
     <vendor email="github.haoliu@gmail.com" url="">NULL</vendor>
 
