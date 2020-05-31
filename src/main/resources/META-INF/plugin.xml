@@ -20,6 +20,11 @@
         <!-- Add your extensions here -->
     </extensions>
 
+    <depends>com.google.common.base</depends>
+    <depends>com.alibaba.druid</depends>
+    <depends>org.json</depends>
+
+
     <actions>
         <!-- Add your actions here -->
         <action id="RightClickJSON" class="ConvertJSONAction" text="Convent JSON to GO" description="xxx">
@@ -29,4 +34,6 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
     </actions>
+
+
 </idea-plugin>

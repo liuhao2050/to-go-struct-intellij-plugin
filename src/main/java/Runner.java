@@ -7,7 +7,6 @@ import entry.JsonStructBuilder;
 
 import javax.swing.*;
 import java.awt.*;
-
 class Runner {
     void run(AnActionEvent e, Builder builder) {
         Project project = e.getData(PlatformDataKeys.PROJECT);
