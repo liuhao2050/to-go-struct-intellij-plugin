@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'to-go=struct'
-version '1.0.0'
+version '1.0.2'
 
 sourceCompatibility = 1.8
 

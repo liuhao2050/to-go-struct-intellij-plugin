@@ -5,12 +5,10 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.util.lang.Consumer;
-import com.android.aapt.Resources;
 import com.google.common.base.CaseFormat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> {
@@ -58,19 +56,25 @@ public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> 
 
     }
 
-    String fmt_name(String name) {
-        name = name.replaceAll("`", "").replaceAll("'", "").
-                replaceAll("\"", "");
+    private String fmt_name(String name) {
+        name = clearName(name);
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name).
                 replaceAll("id", "ID").replaceAll("Id", "ID");
     }
 
-    String convert_type(String name) {
+    private String convert_type(String name) {
         return type_map.getOrDefault(name.toUpperCase(), "unknown");
     }
 
-    String makeField(String name, String type) {
-        return "\t" + fmt_name(name) + "\t" + type + " `gorm:\"column\":" + name + "\"`\n";
+    private String clearName(String name) {
+        return name.replaceAll("`", "").replaceAll("'", "").
+                replaceAll("\"", "");
+    }
+
+    private String makeField(String name, String type) {
+
+        name = clearName(name);
+        return "\t" + fmt_name(name) + "\t" + type + " `json:\"" + name + "\"" + " gorm:\"column:" + name + "\"`\n";
     }
 
     @Override
@@ -86,7 +90,7 @@ public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> 
         StringBuilder sb = new StringBuilder();
 
         String tableName = fmt_name(statement.getName().getSimpleName());
-        sb.append("type " + tableName + " {\n");
+        sb.append("type " + tableName + " struct {\n");
         for (SQLColumnDefinition i : cols) {
             String t = convert_type(i.getDataType().getName());
             String field = i.getNameAsString();
@@ -99,7 +103,8 @@ public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> 
         return sb.toString();
     }
 
-    public String table_receiver(String name, String tableName) {
+    private String table_receiver(String name, String tableName) {
+        tableName = clearName(tableName);
         String s = "func (m *" + name + ") TableName() string {\n";
         s += "\treturn \"" + tableName + "\"\n}";
         return s;
