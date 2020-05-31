@@ -25,10 +25,10 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="RightClickJSON" class="ConvertJSONAction" text="Convent JSON to GO" description="xxx">
+        <action id="RightClickJSON" class="ConvertJSONAction" text="Convert JSON to GO" description="xxx">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
-        <action id="RightClickSQL" class="ConvertSQLAction" text="Convent SQL to GO" description="xxx">
+        <action id="RightClickSQL" class="ConvertSQLAction" text="Convert SQL to GO" description="xxx">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
     </actions>
