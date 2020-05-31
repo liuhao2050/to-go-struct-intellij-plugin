@@ -1,11 +1,13 @@
 <idea-plugin>
     <id>1.1</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Convent JSON/SQL to GO Struct</name>
+    <vendor email="github.haoliu@gmail.com" url="">NULL</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Convert JSON or SQL Create TABLE to Go Struct.<br>
+
+    <em>Select JSON/SQL right click and SELECT "Convert JSON/SQL To GO"</em>
+    <p>enjoy.</p>
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -20,8 +22,11 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="PopupDialogAction" class="PopupDialogAction" text="Pop Diallog Action" description="xxx">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        <action id="RightClickJSON" class="ConvertJSONAction" text="Convent JSON to GO" description="xxx">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+        <action id="RightClickSQL" class="ConvertSQLAction" text="Convent SQL to GO" description="xxx">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

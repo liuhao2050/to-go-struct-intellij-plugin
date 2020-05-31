@@ -29,7 +29,7 @@ public class JsonStructBuilder implements Builder {
 
     String makeField(String field, String Type, int deep) {
         String name = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, field);
-        String str = "    " + name + "    " + Type + "    json: \"" + field + "\" \n";
+        String str = "    " + name + "    " + Type + "    `json: \"" + field + "\"` \n";
         return makeTab(str, deep, false);
     }
 
@@ -108,7 +108,6 @@ public class JsonStructBuilder implements Builder {
 
                 }
             } catch (JSONException e2) {
-                // TODO Auto-generated catch block
                 e2.printStackTrace();
                 throw e2;
             }
