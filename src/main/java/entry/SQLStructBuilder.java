@@ -70,7 +70,7 @@ public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> 
     }
 
     String makeField(String name, String type) {
-        return "\t" + fmt_name(name) + "\t" + type + "`gorm:\"column\":" + name + "\"`\n";
+        return "\t" + fmt_name(name) + "\t" + type + " `gorm:\"column\":" + name + "\"`\n";
     }
 
     @Override
@@ -92,8 +92,17 @@ public class SQLStructBuilder implements Builder, Consumer<SQLColumnDefinition> 
             String field = i.getNameAsString();
             sb.append(makeField(field, t));
         }
-        sb.append("}");
+        sb.append("}\n\n");
+
+        sb.append(table_receiver(tableName, statement.getName().getSimpleName()));
+
         return sb.toString();
+    }
+
+    public String table_receiver(String name, String tableName) {
+        String s = "func (m *" + name + ") TableName() string {\n";
+        s += "\treturn \"" + tableName + "\"\n}";
+        return s;
     }
 
     public void accept(SQLColumnDefinition t) {
