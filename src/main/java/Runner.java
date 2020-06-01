@@ -3,7 +3,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import entry.Builder;
-import entry.JsonStructBuilder;
 
 import javax.swing.*;
 import java.awt.*;
