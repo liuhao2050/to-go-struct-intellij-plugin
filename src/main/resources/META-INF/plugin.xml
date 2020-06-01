@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>to-go-struct</id>
     <name>Convent JSON/SQL to GO Struct</name>
-    <vendor email="github.haoliu@gmail.com" url="">[Hao Liu](https://github.com/liuhao2050)</vendor>
+    <vendor email="github.haoliu@gmail.com" url="https://github.com/liuhao2050">Hao Liu</vendor>
 
     <description><![CDATA[
     Convert JSON or SQL Create TABLE to Go Struct.<br>
