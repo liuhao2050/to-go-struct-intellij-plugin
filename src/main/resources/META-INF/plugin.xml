@@ -4,7 +4,7 @@
     <vendor email="github.haoliu@gmail.com" >Hao Liu</vendor>
 
     <description><![CDATA[
-        <p>Convert JSON or SQL Create TABLE to Go Struct.</p>
+        <p>Convert JSON or SQL create table to Go Struct.</p>
         <p>&nbsp;</p>
         <h2>Usage</h2>
         <p>Select JSON/SQL right click and select "Convert JSON/SQL To GO"</p>

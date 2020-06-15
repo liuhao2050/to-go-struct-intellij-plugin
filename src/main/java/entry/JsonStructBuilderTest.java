@@ -16,6 +16,7 @@ public class JsonStructBuilderTest {
 
         String json6 = "{\n" +
                 "  \"aa\": 1,\n" +
+                "  \"order_id\": \"123\",\n" +
                 "\t\"bb\": [{\"c\": 1}],\n" +
                 "\t\"cc\": {\"d\": 1},\n" +
                 "\t\"dd\":[],\n" +

@@ -1,3 +1,8 @@
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.FrameWrapper;
+import com.intellij.openapi.wm.WindowManager;
+import com.intellij.openapi.wm.ex.WindowManagerEx;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -17,6 +22,7 @@ public class TextCopyForm {
             StringSelection selection = new StringSelection(t2TextArea.getText());
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(selection, selection);
+
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         });
     }
@@ -25,7 +31,6 @@ public class TextCopyForm {
         frame.notify();
         frame.setContentPane(new TextCopyForm().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.add("", BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
 

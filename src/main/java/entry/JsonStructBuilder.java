@@ -27,13 +27,14 @@ public class JsonStructBuilder implements Builder {
         return build(json, 0);
     }
 
-    String makeField(String field, String Type, int deep) {
+    private String makeField(String field, String Type, int deep) {
         String name = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, field);
+        name = name.replaceAll("Id", "ID");
         String str = "    " + name + "    " + Type + "    `json:\"" + field + "\"` \n";
         return makeTab(str, deep, false);
     }
 
-    String makeTab(String t, int deep, boolean after) {
+    private String makeTab(String t, int deep, boolean after) {
         String pre = "";
         for (int i = 0; i < deep; i++) {
             pre += "    ";
@@ -55,11 +56,13 @@ public class JsonStructBuilder implements Builder {
             return "float64";
         } else if (JSONObject.NULL.equals(v)) {
             return "interface{}";
-        } else
-            return "";
+        } else if (v instanceof String) {
+            return "string";
+        }
+        return "";
     }
 
-    String build(JSONObject json, int deep) {
+    private String build(JSONObject json, int deep) {
         Iterator iter = json.keys();
         Iterator it = iter;
         String s = "";
@@ -99,7 +102,6 @@ public class JsonStructBuilder implements Builder {
                     }
 
                     //[{"a": ...}]
-                    System.out.println(obj.getClass().getSimpleName());
                     if (obj instanceof JSONObject) {
                         JSONObject item = values.getJSONObject(0);
                         s += makeField(k, "[]" + build(item, deep + 1), deep);

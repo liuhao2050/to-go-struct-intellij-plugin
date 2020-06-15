@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'to-go=struct'
-version '1.0.3'
+version '1.0.5'
 
 sourceCompatibility = 1.8
 
@@ -26,6 +26,8 @@ intellij {
 
 patchPluginXml {
     changeNotes """
+        1.Fixed JSON string type field missed after convert.
+        2.Open window in current screen.
       """
     sinceBuild '161'
     untilBuild '202'
