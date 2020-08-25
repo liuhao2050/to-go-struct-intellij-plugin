@@ -47,9 +47,7 @@ class JsonStructBuilder(private var title: String) : Builder {
         s = if (deep == 0) {
             makeTab("type $title struct {\n", deep, false)
         } else {
-                    "\n     ${s}struct {\n" +
-                    "     \n" +
-                    "     "
+            "${s}struct {\n"
         }
         while (iter.hasNext()) {
             val k = iter.next() as String
