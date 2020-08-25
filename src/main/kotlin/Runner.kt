@@ -16,7 +16,7 @@ internal class Runner {
         val tf = TextCopyForm()
         val frame = TextCopyForm.getFrame()
         val p = Objects.requireNonNull(WindowManager.getInstance().getFrame(project))
-            .getLocationOnScreen()
+            ?.locationOnScreen
         frame.location = p
         tf.t1TextArea.text = selectedText
         tf.t2TextArea.text = result
