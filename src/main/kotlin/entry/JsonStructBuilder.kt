@@ -1,6 +1,5 @@
 package entry
 
-import com.google.common.base.CaseFormat
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -16,9 +15,7 @@ class JsonStructBuilder(private var title: String) : Builder {
     }
 
     private fun makeField(field: String, Type: String, deep: Int): String {
-        var name = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, field)
-        name = name.replace("Id".toRegex(), "ID")
-        val str = "    $name    $Type    `json:\"$field\"` \n"
+        val str = "    ${field.fmtName()}    $Type    `json:\"$field\"` \n"
         return makeTab(str, deep, false)
     }
 
@@ -32,43 +29,34 @@ class JsonStructBuilder(private var title: String) : Builder {
         } else pre + t
     }
 
-    private fun type_assert(s: String, v: Any): String {
-        if (v is Int) {
-            return "int"
-        } else if (v is Long) {
-            return "int64"
-        } else if (v is Boolean) {
-            return "bool"
-        } else if (v is Float || v is Double) {
-            return "float64"
-        } else if (JSONObject.NULL == v) {
-            return "interface{}"
-        } else if (v is String) {
-            return "string"
+    private fun typeAssert(s: String, v: Any): String {
+        return when {
+            v is Int -> "int"
+            v is Long -> "int64"
+            v is Boolean -> "bool"
+            v is Float || v is Double -> "float64"
+            JSONObject.NULL == v -> "interface{}"
+            v is String -> "string"
+            else -> ""
         }
-        return ""
     }
 
     private fun build(json: JSONObject, deep: Int): String {
         val iter: Iterator<*> = json.keys()
         var s = ""
         s = if (deep == 0) {
-            makeTab(
-                """type ${title} struct {
-""", deep, false
-            )
+            makeTab("type $title struct {\n", deep, false)
         } else {
-            """
-     ${s}struct {
-     
-     """.trimIndent()
+                    "\n     ${s}struct {\n" +
+                    "     \n" +
+                    "     "
         }
         while (iter.hasNext()) {
             val k = iter.next() as String
             try {
                 val v = json[k]
-                var type = type_assert(s, v)
-                if (type.length != 0) {
+                var type = typeAssert(s, v)
+                if (type.isNotEmpty()) {
                     s += makeField(k, type, deep)
                 }
                 if (v is JSONObject) {
@@ -84,8 +72,8 @@ class JsonStructBuilder(private var title: String) : Builder {
 
                     // [1, 2] or ["1", "2"] ...
                     val obj = values[0]
-                    type = type_assert(s, obj)
-                    if (type.length != 0) {
+                    type = typeAssert(s, obj)
+                    if (type.isNotEmpty()) {
                         s += makeField(k, "[]$type", deep)
                         continue
                     }
