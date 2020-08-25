@@ -46,10 +46,12 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         return s
     }
 
+
     override fun accept(t: SQLColumnDefinition) {
-        if (t.nameAsString.toUpperCase().contains("KEY")) {
-            return
-        }
+//        这个判断会跳过一些字段，比如 keyword 字段
+//        if (t.nameAsString.toUpperCase().contains("KEY")) {
+//            return
+//        }
         cols.add(t)
     }
 
