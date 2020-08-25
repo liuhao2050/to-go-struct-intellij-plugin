@@ -84,7 +84,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "datetime" to "time.Time",
         "timestamp" to "time.Time",
         "time" to "time.Time",
-        "float" to "float",
+        "float" to "float32",
         "double" to "float64",
         "decimal" to "float64",
         "binary" to "[]int8",
