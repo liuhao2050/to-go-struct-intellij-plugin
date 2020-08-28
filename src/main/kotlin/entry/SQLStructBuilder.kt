@@ -48,10 +48,9 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
 
     override fun accept(t: SQLColumnDefinition) {
-//        这个判断会跳过一些字段，比如 keyword 字段
-//        if (t.nameAsString.toUpperCase().contains("KEY")) {
-//            return
-//        }
+        if (t.nameAsString.toUpperCase() == "KEY") {
+            return
+        }
         cols.add(t)
     }
 
@@ -62,6 +61,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "smallint" to "int16",
         "mediumint" to "int32",
         "bigint" to "int64",
+        //这里发现一个问题，即使我的 sql type是unsigned的,也会解析成signed的，即无论有无符号，都会解析成有符号
         "int unsigned" to "uint",
         "integer unsigned" to "uint",
         "tinyint unsigned" to "uint8",

@@ -9,6 +9,7 @@ fun String.underscoreToCamel(): String {
     return sb.toString()
 }
 
+//这里还是不把id改了吧，今天发现我的 VideoUrl 变成 VIDeoUrl,难受
 fun String.fmtName(to: String): String {
     var name = this.clearName()
     if (name.contains("_")) name = name.underscoreToCamel()
