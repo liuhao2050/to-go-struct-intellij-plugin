@@ -7,18 +7,18 @@ import java.util.*
 
 class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     var cols = ArrayList<SQLColumnDefinition>()
-    private var sqlKeyName = "db"
-    private val column = ""
+    private var sqlTagKey = "db"
+    private val sqlTagValPrefix = ""
 
     override fun setTitle(title: String) {}
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
 
     private fun makeField(name: String, type: String): String {
-        var name = name.clearName()
-        var column = this.column
-        if (column.trim().isNotEmpty()) column += ":"
-        return "\t${name.fmtName()}\t$type `json:\"$name\" $sqlKeyName:\"$column$name\"`\n"
+        val name1 = name.clearName()
+        var sqlTagValPrefix = this.sqlTagValPrefix
+        if (sqlTagValPrefix.trim().isNotEmpty()) sqlTagValPrefix += ":"
+        return "\t${name1.fmtName("go")}\t$type `json:\"${name1.fmtName("json")}\" $sqlTagKey:\"$sqlTagValPrefix$name1\"`\n"
     }
 
     override fun gen(sql: String): String {
@@ -27,7 +27,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         val statement = createTableParser.parseCreateTable()
         statement.forEachColumn(this)
         val sb = StringBuilder()
-        val tableName = statement.name.simpleName.fmtName()
+        val tableName = statement.name.simpleName.fmtName("go")
         sb.append("type $tableName struct {\n")
         for (i in cols) {
             val t = i.dataType.name.convertType()
@@ -40,9 +40,9 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     }
 
     private fun tableReceiver(name: String, tableName: String): String {
-        val tablName = tableName.clearName()
+        val tableName1 = tableName.clearName()
         var s = "func (m *$name) TableName() string {\n"
-        s += "\treturn \"$tableName\"\n}"
+        s += "\treturn \"$tableName1\"\n}"
         return s
     }
 
@@ -78,10 +78,10 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "mediumtext" to "string",
         "text" to "string",
         "longtext" to "string",
-        "blob" to "[]int8",
-        "tinyblob" to "[]int8",
-        "mediumblob" to "[]int8",
-        "longblob" to "[]int8",
+        "blob" to "[]byte",
+        "tinyblob" to "[]byte",
+        "mediumblob" to "[]byte",
+        "longblob" to "[]byte",
         "date" to "time.Time",
         "datetime" to "time.Time",
         "timestamp" to "time.Time",
@@ -89,8 +89,8 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "float" to "float32",
         "double" to "float64",
         "decimal" to "float64",
-        "binary" to "[]int8",
-        "varbinary" to "[]int8"
+        "binary" to "[]byte",
+        "varbinary" to "[]byte"
     )
 
 }

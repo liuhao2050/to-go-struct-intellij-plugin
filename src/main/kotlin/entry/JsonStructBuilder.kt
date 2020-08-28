@@ -15,7 +15,7 @@ class JsonStructBuilder(private var title: String) : Builder {
     }
 
     private fun makeField(field: String, Type: String, deep: Int): String {
-        val str = "    ${field.fmtName()}    $Type    `json:\"$field\"` \n"
+        val str = "    ${field.fmtName("go")}    $Type    `json:\"$field\"` \n"
         return makeTab(str, deep, false)
     }
 

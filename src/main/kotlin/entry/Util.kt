@@ -9,11 +9,12 @@ fun String.underscoreToCamel(): String {
     return sb.toString()
 }
 
-fun String.fmtName(): String {
-    var name = this.clearName().firstToUpper()
+fun String.fmtName(to: String): String {
+    var name = this.clearName()
     if (name.contains("_")) name = name.underscoreToCamel()
-    return name.replace("id".toRegex(), "ID")
-        .replace("Id".toRegex(), "ID")
+    if (to == "json") name = name.firstToLower()
+    else if (to == "go") name = name.firstToUpper()
+    return name
 }
 
 fun String.clearName() =
@@ -24,5 +25,12 @@ fun String.firstToUpper(): String {
     if (this.isEmpty()) return ""
     val ch = this.toCharArray()
     ch[0] = ch[0].toUpperCase()
+    return String(ch)
+}
+
+fun String.firstToLower(): String {
+    if (this.isEmpty()) return ""
+    val ch = this.toCharArray()
+    ch[0] = ch[0].toLowerCase()
     return String(ch)
 }
