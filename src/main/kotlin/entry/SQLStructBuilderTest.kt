@@ -8,7 +8,7 @@ class SQLStructBuilderTest {
     fun gen() {
         val case1 = """
             CREATE TABLE `policy_info` (
-            `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
+            `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT ' comment id',
             `policy_id` varchar(128) NOT NULL COMMENT 'ID',
             `policy_name` varchar(128) NOT NULL,
             `object_id` varchar(128) NOT NULL COMMENT 'ID',
