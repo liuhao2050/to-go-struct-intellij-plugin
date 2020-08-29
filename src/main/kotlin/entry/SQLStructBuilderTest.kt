@@ -15,7 +15,7 @@ class SQLStructBuilderTest {
             `policy_type` varchar(16) NOT NULL DEFAULT 'system' COMMENT 'policy_type="system":policy_type="custom":',
             `policy_version` int(11) NOT NULL COMMENT 'version=1',
             `statement` mediumtext NOT NULL COMMENT 'json',
-            `is_delete` tinyint(4) NOT NULL DEFAULT '0' COMMENT ', is_delete=0:is_delete=1:',
+            `is_delete` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'is_delete=0:is_delete=1:',
             `creator` varchar(128) NOT NULL,
             `operator` varchar(128) NOT NULL,
             `create_time` datetime NOT NULL,

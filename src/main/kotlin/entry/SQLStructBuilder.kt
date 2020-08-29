@@ -76,6 +76,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
     override fun accept(t: SQLColumnDefinition) {
         // The `KEY` field should be skipped.
+        // this may cause `key` field missing, but we have no better way found QAQ
         if (t.nameAsString.toUpperCase() == "KEY") {
             return
         }
