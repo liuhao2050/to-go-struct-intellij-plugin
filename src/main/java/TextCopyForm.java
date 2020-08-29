@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 public class TextCopyForm {
@@ -15,6 +17,14 @@ public class TextCopyForm {
     private JTextArea t1TextArea;
     private JTextArea t2TextArea;
     private JButton copyButton;
+
+    public JTextField getTagTextField() {
+        return tagTextField;
+    }
+
+    private JTextField tagTextField;
+    private JCheckBox CRUDFunctionsCheckBox;
+    private JCheckBox withCommentsCheckBox;
 
     TextCopyForm() {
         frame = new JFrame();
@@ -25,6 +35,11 @@ public class TextCopyForm {
 
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         });
+        tagTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -33,7 +48,6 @@ public class TextCopyForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
     }
 
     static JFrame getFrame() {

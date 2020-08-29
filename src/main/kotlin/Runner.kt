@@ -12,8 +12,12 @@ internal class Runner {
             e.getData(PlatformDataKeys.PROJECT)
         val editor = e.getData(PlatformDataKeys.EDITOR) ?: return
         val selectedText = editor.selectionModel.selectedText
-        val result = builder.gen(selectedText)
         val tf = TextCopyForm()
+
+        val tpl = tf.tagTextField.text
+        builder.setTagTemplate(tpl)
+        val result = builder.gen(selectedText)
+
         val frame = TextCopyForm.getFrame()
         val p = Objects.requireNonNull(WindowManager.getInstance().getFrame(project))
             ?.locationOnScreen

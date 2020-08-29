@@ -7,18 +7,18 @@ import java.util.*
 
 class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     var cols = ArrayList<SQLColumnDefinition>()
-    private var sqlKeyName = "db"
-    private val column = ""
+    private var tpl = ""
 
-    override fun setTitle(title: String) {}
+    override fun setTagTemplate(tpl: String) {
+        this.tpl = tpl
+    }
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
 
     private fun makeField(name: String, type: String): String {
-        var name = name.clearName()
-        var column = this.column
-        if (column.trim().isNotEmpty()) column += ":"
-        return "\t${name.fmtName()}\t$type `json:\"$name\" $sqlKeyName:\"$column$name\"`\n"
+        val originName = name.clearName()
+        val tag = originName.makeTags(this.tpl)
+        return "\t${originName.fmtName()}\t$type$tag\n"
     }
 
     override fun gen(sql: String): String {
@@ -40,7 +40,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     }
 
     private fun tableReceiver(name: String, tableName: String): String {
-        val tablName = tableName.clearName()
+        val tableName = tableName.clearName()
         var s = "func (m *$name) TableName() string {\n"
         s += "\treturn \"$tableName\"\n}"
         return s
@@ -48,10 +48,10 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
 
     override fun accept(t: SQLColumnDefinition) {
-//        这个判断会跳过一些字段，比如 keyword 字段
-//        if (t.nameAsString.toUpperCase().contains("KEY")) {
-//            return
-//        }
+        // The `KEY` field should be skipped.
+        if (t.nameAsString.toUpperCase() == "KEY") {
+            return
+        }
         cols.add(t)
     }
 

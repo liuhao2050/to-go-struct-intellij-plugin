@@ -5,8 +5,9 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class JsonStructBuilder(private var title: String) : Builder {
-    override fun setTitle(title: String) {
-        this.title = title
+    private var tpl = ""
+    override fun setTagTemplate(tpl: String) {
+        this.tpl = tpl
     }
 
     override fun gen(str: String): String {
@@ -15,7 +16,8 @@ class JsonStructBuilder(private var title: String) : Builder {
     }
 
     private fun makeField(field: String, Type: String, deep: Int): String {
-        val str = "    ${field.fmtName()}    $Type    `json:\"$field\"` \n"
+        val tag = field.makeTags(this.tpl)
+        val str = "    ${field.fmtName()}    $Type$tag\n"
         return makeTab(str, deep, false)
     }
 

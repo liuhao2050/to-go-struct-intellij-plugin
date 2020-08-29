@@ -26,3 +26,11 @@ fun String.firstToUpper(): String {
     ch[0] = ch[0].toUpperCase()
     return String(ch)
 }
+
+// tpl should: `json:"%s" bson:"%s" etc...`
+fun String.makeTags(tpl: String): String {
+    if (tpl.isEmpty()) {
+        return ""
+    }
+    return "    `" + tpl.replace("%s", this) + "`"
+}
