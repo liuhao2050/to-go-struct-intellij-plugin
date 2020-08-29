@@ -25,7 +25,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
             return ""
         }
         val text = comment.toString().clearName()
-        return " // ${text}"
+        return " // $text"
     }
 
     private fun makeField(name: String, type: String, comment: SQLExpr?): String {
