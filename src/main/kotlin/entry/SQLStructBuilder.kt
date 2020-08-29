@@ -7,51 +7,58 @@ import java.util.*
 
 class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     var cols = ArrayList<SQLColumnDefinition>()
-    private var sqlKeyName = "db"
-    private val column = ""
+    private var tpl = ""
+    private var withCRUDs = true
 
-    override fun setTitle(title: String) {}
+    override fun setConfig(tpl: String, withCRUDs: Boolean) {
+        this.tpl = tpl
+        this.withCRUDs = withCRUDs
+    }
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
 
     private fun makeField(name: String, type: String): String {
-        var name = name.clearName()
-        var column = this.column
-        if (column.trim().isNotEmpty()) column += ":"
-        return "\t${name.fmtName()}\t$type `json:\"$name\" $sqlKeyName:\"$column$name\"`\n"
+        val originName = name.clearName()
+        val tag = originName.makeTags(this.tpl)
+        return "\t${originName.fmtName()}\t$type$tag\n"
     }
 
-    override fun gen(sql: String): String {
+    override fun gen(sql: String): String? {
+        cols = ArrayList()
         val parser = MySqlStatementParser(sql)
         val createTableParser = parser.sqlCreateTableParser
         val statement = createTableParser.parseCreateTable()
         statement.forEachColumn(this)
         val sb = StringBuilder()
-        val tableName = statement.name.simpleName.fmtName()
-        sb.append("type $tableName struct {\n")
+        val modelName = statement.name.simpleName.fmtName()
+        sb.append("type $modelName struct {\n")
         for (i in cols) {
             val t = i.dataType.name.convertType()
             val field = i.nameAsString
             sb.append(makeField(field, t))
         }
         sb.append("}\n\n")
-        sb.append(tableReceiver(tableName, statement.name.simpleName))
+        sb.append(tableReceiver(modelName, statement.name.simpleName))
+        if (withCRUDs) {
+            sb.append("\n\n").append(modelName.makeDaoFunc())
+            sb.append("\n\n").append(modelName.makeCreatefn())
+        }
         return sb.toString()
     }
 
     private fun tableReceiver(name: String, tableName: String): String {
-        val tablName = tableName.clearName()
+        val modelName = tableName.clearName()
         var s = "func (m *$name) TableName() string {\n"
-        s += "\treturn \"$tableName\"\n}"
+        s += "\treturn \"$modelName\"\n}"
         return s
     }
 
 
     override fun accept(t: SQLColumnDefinition) {
-//        这个判断会跳过一些字段，比如 keyword 字段
-//        if (t.nameAsString.toUpperCase().contains("KEY")) {
-//            return
-//        }
+        // The `KEY` field should be skipped.
+        if (t.nameAsString.toUpperCase() == "KEY") {
+            return
+        }
         cols.add(t)
     }
 

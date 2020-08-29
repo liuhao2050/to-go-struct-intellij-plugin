@@ -1,6 +1,6 @@
 package entry;
 
 public interface Builder {
-    public void setTitle(String title);
-    public String gen(String input);
+    void setConfig(String tpl, boolean withCRUDs);
+    String gen(String input);
 };

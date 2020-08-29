@@ -28,8 +28,8 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-        1.Fixed JSON string type field missed after convert.
-        2.Open window in current screen.
+        * 1.Fixed JSON string type field missed after convert.
+        * 2.Open window in current screen.
       """
 }
 
