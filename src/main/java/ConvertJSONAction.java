@@ -14,7 +14,6 @@ public class ConvertJSONAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         Builder builder = new JsonStructBuilder("Gen");
         new Runner().run(e, builder);
-
     }
 
 }
