@@ -1,5 +1,7 @@
 package entry
 
+import com.alibaba.druid.sql.ast.SQLDataType
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser
 import com.alibaba.druid.util.lang.Consumer
@@ -33,7 +35,14 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         val modelName = statement.name.simpleName.fmtName()
         sb.append("type $modelName struct {\n")
         for (i in cols) {
-            val t = i.dataType.name.convertType()
+            val tpe = i.dataType
+            var name = tpe.name
+            if(tpe is SQLDataTypeImpl) {
+                if (tpe.isUnsigned) {
+                    name += " unsigned"
+                }
+            }
+            val t = name.convertType()
             val field = i.nameAsString
             sb.append(makeField(field, t))
         }
