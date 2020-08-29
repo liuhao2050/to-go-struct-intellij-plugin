@@ -13,17 +13,14 @@ internal class Runner {
         val editor = e.getData(PlatformDataKeys.EDITOR) ?: return
         val selectedText = editor.selectionModel.selectedText
         val tf = TextCopyForm()
-
-        val tpl = tf.tagTextField.text
-        builder.setTagTemplate(tpl)
-        val result = builder.gen(selectedText)
-
         val frame = TextCopyForm.getFrame()
+        tf.setBuilder(builder);
         val p = Objects.requireNonNull(WindowManager.getInstance().getFrame(project))
             ?.locationOnScreen
         frame.location = p
         tf.t1TextArea.text = selectedText
-        tf.t2TextArea.text = result
+        tf.gen()
+
         frame.contentPane = tf.panel1
         frame.preferredSize = Dimension(1100, 600)
         frame.extendedState = JFrame.NORMAL

@@ -1,6 +1,6 @@
 package entry;
 
 public interface Builder {
-    void setTagTemplate(String tpl);
+    void setConfig(String tpl, boolean withCRUDs);
     String gen(String input);
 };

@@ -12,8 +12,7 @@ fun String.underscoreToCamel(): String {
 fun String.fmtName(): String {
     var name = this.clearName().firstToUpper()
     if (name.contains("_")) name = name.underscoreToCamel()
-    return name.replace("id".toRegex(), "ID")
-        .replace("Id".toRegex(), "ID")
+    return name.replace("Id".toRegex(), "ID")
 }
 
 fun String.clearName() =
@@ -33,4 +32,42 @@ fun String.makeTags(tpl: String): String {
         return ""
     }
     return "    `" + tpl.replace("%s", this) + "`"
+}
+
+fun String.makeDaoFunc(): String {
+    val dao = this + "Dao"
+    return """
+type $dao struct {
+    sourceDB  *gorm.DB
+    replicaDB []*gorm.DB
+    m         *UserObject
+}
+
+func New$dao(ctx context.Context, dbs ...*gorm.DB) *$dao {
+    dao := new($dao)
+    switch len(dbs) {
+    case 0:
+        panic("database connection required")
+    case 1:
+        dao.sourceDB = dbs[0]
+        dao.replicaDB = []*gorm.DB{dbs[0]}
+    default:
+        dao.sourceDB = dbs[0]
+        dao.replicaDB = dbs[1:]
+    }
+    return dao
+}
+    """.trimIndent()
+}
+
+fun String.makeCreatefn(): String {
+    val dao = this + "Dao"
+    return """
+func (d *$dao) Create(ctx context.Context, obj *$this) error {
+	err := d.sourceDB.Model(d.m).Create(&obj).Error
+	if err != nil {
+		return fmt.Errorf("$dao: %w", err)
+	}
+	return nil
+}"""
 }

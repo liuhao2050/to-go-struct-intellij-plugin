@@ -21,7 +21,7 @@
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Copy"/>
+              <text value="Copy and Close"/>
             </properties>
           </component>
           <scrollpane id="9229c">
@@ -71,23 +71,15 @@
           </grid>
         </constraints>
         <properties>
-          <text value="json:&quot;%s&quot; "/>
+          <text value="json:&quot;%s&quot; gorm:&quot;column:%s&quot;"/>
         </properties>
       </component>
-      <component id="81891" class="javax.swing.JCheckBox" binding="CRUDFunctionsCheckBox" default-binding="true">
-        <constraints>
-          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="CRUD functions"/>
-        </properties>
-      </component>
-      <component id="58b31" class="javax.swing.JCheckBox" binding="withCommentsCheckBox" default-binding="true">
+      <component id="58b31" class="javax.swing.JCheckBox" binding="withCRUDCheckBox" default-binding="true">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="With Comments"/>
+          <text value="With CRUD  "/>
         </properties>
       </component>
     </children>

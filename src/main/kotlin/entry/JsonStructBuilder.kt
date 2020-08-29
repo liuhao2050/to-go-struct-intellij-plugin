@@ -6,11 +6,11 @@ import org.json.JSONObject
 
 class JsonStructBuilder(private var title: String) : Builder {
     private var tpl = ""
-    override fun setTagTemplate(tpl: String) {
+    override fun setConfig(tpl: String, withCRUDs: Boolean) {
         this.tpl = tpl
     }
 
-    override fun gen(str: String): String {
+    override fun gen(str: String): String? {
         val json = JSONObject(str)
         return build(json, 0)
     }

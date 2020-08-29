@@ -8,9 +8,11 @@ import java.util.*
 class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
     var cols = ArrayList<SQLColumnDefinition>()
     private var tpl = ""
+    private var withCRUDs = true
 
-    override fun setTagTemplate(tpl: String) {
+    override fun setConfig(tpl: String, withCRUDs: Boolean) {
         this.tpl = tpl
+        this.withCRUDs = withCRUDs
     }
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
@@ -21,28 +23,33 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         return "\t${originName.fmtName()}\t$type$tag\n"
     }
 
-    override fun gen(sql: String): String {
+    override fun gen(sql: String): String? {
+        cols = ArrayList()
         val parser = MySqlStatementParser(sql)
         val createTableParser = parser.sqlCreateTableParser
         val statement = createTableParser.parseCreateTable()
         statement.forEachColumn(this)
         val sb = StringBuilder()
-        val tableName = statement.name.simpleName.fmtName()
-        sb.append("type $tableName struct {\n")
+        val modelName = statement.name.simpleName.fmtName()
+        sb.append("type $modelName struct {\n")
         for (i in cols) {
             val t = i.dataType.name.convertType()
             val field = i.nameAsString
             sb.append(makeField(field, t))
         }
         sb.append("}\n\n")
-        sb.append(tableReceiver(tableName, statement.name.simpleName))
+        sb.append(tableReceiver(modelName, statement.name.simpleName))
+        if (withCRUDs) {
+            sb.append("\n\n").append(modelName.makeDaoFunc())
+            sb.append("\n\n").append(modelName.makeCreatefn())
+        }
         return sb.toString()
     }
 
     private fun tableReceiver(name: String, tableName: String): String {
-        val tableName = tableName.clearName()
+        val modelName = tableName.clearName()
         var s = "func (m *$name) TableName() string {\n"
-        s += "\treturn \"$tableName\"\n}"
+        s += "\treturn \"$modelName\"\n}"
         return s
     }
 
