@@ -85,10 +85,10 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "mediumtext" to "string",
         "text" to "string",
         "longtext" to "string",
-        "blob" to "[]int8",
-        "tinyblob" to "[]int8",
-        "mediumblob" to "[]int8",
-        "longblob" to "[]int8",
+        "blob" to "[]byte",
+        "tinyblob" to "[]byte",
+        "mediumblob" to "[]byte",
+        "longblob" to "[]byte",
         "date" to "time.Time",
         "datetime" to "time.Time",
         "timestamp" to "time.Time",
@@ -96,8 +96,8 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "float" to "float32",
         "double" to "float64",
         "decimal" to "float64",
-        "binary" to "[]int8",
-        "varbinary" to "[]int8"
+        "binary" to "[]byte",
+        "varbinary" to "[]byte"
     )
 
 }
