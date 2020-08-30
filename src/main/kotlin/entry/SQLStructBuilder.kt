@@ -1,5 +1,8 @@
 package entry
 
+import com.alibaba.druid.sql.ast.SQLDataType
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl
+import com.alibaba.druid.sql.ast.SQLExpr
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser
 import com.alibaba.druid.util.lang.Consumer
@@ -17,10 +20,19 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
 
-    private fun makeField(name: String, type: String): String {
+    fun makeComment(comment: SQLExpr?): String {
+        if (comment == null) {
+            return ""
+        }
+        val text = comment.toString().clearName()
+        return " // $text"
+    }
+
+    private fun makeField(name: String, type: String, comment: SQLExpr?): String {
         val originName = name.clearName()
         val tag = originName.makeTags(this.tpl)
-        return "\t${originName.fmtName()}\t$type$tag\n"
+        val commentText = makeComment(comment)
+        return "\t${originName.fmtName()}\t$type$tag${commentText}\n"
     }
 
     override fun gen(sql: String): String? {
@@ -33,9 +45,17 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         val modelName = statement.name.simpleName.fmtName()
         sb.append("type $modelName struct {\n")
         for (i in cols) {
-            val t = i.dataType.name.convertType()
+            val tpe = i.dataType
+            var name = tpe.name
+            if (tpe is SQLDataTypeImpl) {
+                if (tpe.isUnsigned) {
+                    name += " unsigned"
+                }
+            }
+            val t = name.convertType()
             val field = i.nameAsString
-            sb.append(makeField(field, t))
+
+            sb.append(makeField(field, t, i.comment))
         }
         sb.append("}\n\n")
         sb.append(tableReceiver(modelName, statement.name.simpleName))
@@ -56,6 +76,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
     override fun accept(t: SQLColumnDefinition) {
         // The `KEY` field should be skipped.
+        // this may cause `key` field missing, but we have no better way found QAQ
         if (t.nameAsString.toUpperCase() == "KEY") {
             return
         }
