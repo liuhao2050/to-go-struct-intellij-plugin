@@ -71,7 +71,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="json:&quot;%s&quot; gorm:&quot;column:%s&quot;"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="58b31" class="javax.swing.JCheckBox" binding="withCRUDCheckBox" default-binding="true">
