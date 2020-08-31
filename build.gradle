@@ -6,7 +6,6 @@ plugins {
 
 group 'to-go=struct'
 version '1.0.7'
-
 sourceCompatibility = 1.8
 
 repositories {
@@ -28,11 +27,12 @@ intellij {
 }
 
 patchPluginXml {
+    sinceBuild '141'
+    untilBuild '666'
     changeNotes """
-        * 1. Fixed some key missing after convert.\n 
-        * 2. Support automatic saving of custom tags\n
-        * 3. Added crud function generation \n
-
+        1. Fixed some key missing after convert.<br>
+        2. Support automatic saving of custom tags<br>
+        3. Added crud function generation <br>
       """
 }
 
