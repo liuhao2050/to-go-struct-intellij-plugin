@@ -40,7 +40,7 @@ fun String.makeDaoFunc(): String {
 type $dao struct {
     sourceDB  *gorm.DB
     replicaDB []*gorm.DB
-    m         *UserObject
+    m         *$this
 }
 
 func New$dao(ctx context.Context, dbs ...*gorm.DB) *$dao {
@@ -60,7 +60,7 @@ func New$dao(ctx context.Context, dbs ...*gorm.DB) *$dao {
     """.trimIndent()
 }
 
-fun String.makeCreatefn(): String {
+fun String.makeCreateFunc(): String {
     val dao = this + "Dao"
     return """
 func (d *$dao) Create(ctx context.Context, obj *$this) error {
@@ -70,4 +70,65 @@ func (d *$dao) Create(ctx context.Context, obj *$this) error {
 	}
 	return nil
 }"""
+}
+
+
+fun String.makeUpdateFunc(): String {
+    val dao = this + "Dao"
+    return """
+func (d *$dao) Update(ctx context.Context, where string, update map[string]interface{}, args ...interface{}) error {
+    err := d.sourceDB.Model(d.m).Where(where, args...).
+        Updates(update).Error
+    if err != nil {
+        return fmt.Errorf("$dao:Update where=%s: %w", where, err)
+    }
+    return nil
+}
+    """.trimIndent()
+}
+
+fun String.makeGetFunc(): String {
+    val dao = this + "Dao"
+    return """
+func (d *$dao) Get(ctx context.Context, fields, where string) (*$this, error) {
+    items, err := d.List(ctx, fields, where, 0, 1)
+    if err != nil {
+        return nil, fmt.Errorf("$dao: Get where=%s: %w", where, err)
+    }
+    if len(items) == 0 {
+        return nil, gorm.ErrRecordNotFound
+    }
+    return &items[0], nil
+}
+    """.trimIndent()
+}
+
+fun String.makeListFunc(): String {
+    val dao = this + "Dao"
+    return """
+func (d *$dao) List(ctx context.Context, fields, where string, offset, limit interface{}) ([]$this, error) {
+    var results []$this
+    err := d.replicaDB[rand.Intn(len(d.replicaDB))].Model(d.m).
+        Select(fields).Where(where).Offset(offset).Limit(limit).Find(&results).Error
+    if err != nil {
+        return nil, fmt.Errorf("$dao: List where=%s: %w", where, err)
+    }
+    return results, nil
+}
+    """.trimIndent()
+}
+
+fun String.makeDeleteFunc(): String {
+    val dao = this + "Dao"
+    return """
+func (d *$dao) Delete(ctx context.Context, where string, args ...interface{}) error {
+    if len(where) == 0 {
+        return gorm.ErrInvalidSQL
+    }
+    if err := d.sourceDB.Where(where, args...).Delete(d.m).Error; err != nil {
+        return fmt.Errorf("$dao: Delete where=%s: %w", where, err)
+    }
+    return nil
+}
+    """.trimIndent()
 }

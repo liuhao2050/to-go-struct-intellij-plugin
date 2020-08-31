@@ -1,62 +1,80 @@
+import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import entry.Builder;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.WindowEvent;
 
-public class TextCopyForm {
+public class TextCopyForm extends DialogWrapper {
 
 
-    private Builder builder;
-    private static JFrame frame;
     private JPanel panel1;
     private JTextArea t1TextArea;
     private JTextArea t2TextArea;
     private JButton copyButton;
-
-    public JTextField getTagTextField() {
-        return tagTextField;
-    }
-
     private JTextField tagTextField;
     private JCheckBox withCRUDCheckBox;
 
+    private Builder builder;
+    private String tagTplKey = "go-tag-tpl";
+    private String defaultTag = "json:\"%s\" gorm:\"column:%s\"";
 
-    TextCopyForm() {
-        frame = new JFrame();
+    protected TextCopyForm(@Nullable Project project) {
+        super(project, null, false, IdeModalityType.IDE, false);
+        setTitle("Convert To Go");
+        init();
+    }
+
+    @Nullable
+    @Override
+    protected String getDimensionServiceKey() {
+        return TextCopyForm.class.getName();
+    }
+
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
         copyButton.addActionListener(e -> {
             StringSelection selection = new StringSelection(t2TextArea.getText());
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(selection, selection);
+            dispose();
+        });
+        tagTextField.setText(getTpl());
+        tagTextField.getDocument().
+                addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        gen();
+                    }
 
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-        });
-        tagTextField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                gen();
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                gen();
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                gen();
-            }
-        });
-        withCRUDCheckBox.addChangeListener(new ChangeListener(){
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                gen();
-            }
-        });
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        gen();
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        gen();
+                    }
+                });
+
+        withCRUDCheckBox.addChangeListener(e -> gen());
+        return panel1;
+    }
+
+    private String getTpl() {
+        return PropertiesComponent.getInstance().getValue(tagTplKey, defaultTag);
+    }
+
+    private void setTpl(String tpl) {
+        PropertiesComponent.getInstance().setValue(tagTplKey, tpl, defaultTag);
     }
 
     public void gen() {
@@ -65,31 +83,12 @@ public class TextCopyForm {
         String selectedText = t1TextArea.getText();
         String result = builder.gen(selectedText);
         this.t2TextArea.setText(result);
+        setTpl(tpl);
     }
 
-    public static void main(String[] args) {
-        frame.notify();
-        frame.setContentPane(new TextCopyForm().panel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    static JFrame getFrame() {
-        return frame;
-    }
-
-    JTextArea getT1TextArea() {
-        return t1TextArea;
-    }
-
-    JTextArea getT2TextArea() {
-        return t2TextArea;
-    }
-    void setBuilder(Builder builder) {
+    void setBuilder(Builder builder, String text) {
         this.builder = builder;
-    }
-    JPanel getPanel1() {
-        return panel1;
+        this.t1TextArea.setText(text);
     }
 }
+

@@ -5,7 +5,9 @@
     <constraints>
       <xy x="20" y="20" width="512" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <toolTipText value="use '%s' format field name"/>
+    </properties>
     <border type="none"/>
     <children>
       <grid id="69a8f" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -71,7 +73,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="json:&quot;%s&quot; gorm:&quot;column:%s&quot;"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="58b31" class="javax.swing.JCheckBox" binding="withCRUDCheckBox" default-binding="true">
