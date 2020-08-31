@@ -1,6 +1,5 @@
 package entry
 
-import com.alibaba.druid.sql.ast.SQLDataType
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl
 import com.alibaba.druid.sql.ast.SQLExpr
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition
@@ -61,7 +60,11 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         sb.append(tableReceiver(modelName, statement.name.simpleName))
         if (withCRUDs) {
             sb.append("\n\n").append(modelName.makeDaoFunc())
-            sb.append("\n\n").append(modelName.makeCreatefn())
+            sb.append("\n\n").append(modelName.makeCreateFunc())
+            sb.append("\n\n").append(modelName.makeGetFunc())
+            sb.append("\n\n").append(modelName.makeListFunc())
+            sb.append("\n\n").append(modelName.makeUpdateFunc())
+            sb.append("\n\n").append(modelName.makeDeleteFunc())
         }
         return sb.toString()
     }
