@@ -17,7 +17,7 @@
         <p> <a href="https://github.com/liuhao2050/to-go-struct-intellij-plugin">to-go-struct-intellij-plugin</a></p>
         <p>&nbsp;</p>
     ]]></description>
-
+    <idea-version since-build="145.0"/>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <!-- uncomment to enable plugin in all products
