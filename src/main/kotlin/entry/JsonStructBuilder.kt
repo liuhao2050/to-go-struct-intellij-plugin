@@ -1,5 +1,6 @@
 package entry
 
+import com.google.gson.JsonArray
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -10,9 +11,19 @@ class JsonStructBuilder(private var title: String) : Builder {
         this.tpl = tpl
     }
 
-    override fun gen(str: String): String? {
-        val json = JSONObject(str)
-        return build(json, 0)
+    override fun gen(str: String): String {
+        if (str.trim().startsWith("{")) {
+            val json = JSONObject(str)
+            return build(json, 0)
+        } else if (str.trim().startsWith('[')) {
+            val jsonArray = JSONArray(str)
+            if (jsonArray.length() == 0) {
+                return "empty input"
+            } else if (jsonArray[0] is JSONObject) {
+                return build(jsonArray[0] as JSONObject, 0)
+            }
+        }
+        return "json string should start with '{' or '['"
     }
 
     private fun makeField(field: String, Type: String, deep: Int): String {

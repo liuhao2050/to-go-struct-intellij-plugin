@@ -23,7 +23,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         if (comment == null) {
             return ""
         }
-        val text = comment.toString().clearName()
+        val text = comment.toString().clearName().replace("\n", " ")
         return " // $text"
     }
 
