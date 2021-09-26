@@ -88,6 +88,7 @@ public class TextCopyForm extends DialogWrapper {
 
     void setBuilder(Builder builder, String text) {
         this.builder = builder;
+        // TODO if text is empty alert some help message
         this.t1TextArea.setText(text);
     }
 }
