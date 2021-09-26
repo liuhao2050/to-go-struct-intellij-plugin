@@ -121,7 +121,8 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
         "double" to "float64",
         "decimal" to "float64",
         "binary" to "[]byte",
-        "varbinary" to "[]byte"
+        "varbinary" to "[]byte",
+        "boolean" to "bool"
     )
 
 }
