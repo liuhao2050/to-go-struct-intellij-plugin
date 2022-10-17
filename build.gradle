@@ -28,7 +28,7 @@ intellij {
 
 patchPluginXml {
     sinceBuild '141'
-    untilBuild '666'
+    untilBuild ''
     changeNotes """
         1. Fixed some key missing after convert.<br>
         2. Support automatic saving of custom tags<br>
