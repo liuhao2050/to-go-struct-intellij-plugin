@@ -19,7 +19,7 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
     private fun String.convertType() = typeMap.getOrDefault(this.toLowerCase(), "unknown")
 
-    fun makeComment(comment: SQLExpr?): String {
+    private fun makeComment(comment: SQLExpr?): String {
         if (comment == null) {
             return ""
         }
@@ -29,9 +29,17 @@ class SQLStructBuilder : Builder, Consumer<SQLColumnDefinition> {
 
     private fun makeField(name: String, type: String, comment: SQLExpr?): String {
         val originName = name.clearName()
-        val tag = originName.makeTags(this.tpl)
+        val values = mapOf<String,String>("comment" to comment.toString().clearName().replace("\n", " "))
+        val tag = replaceVarInTag(originName.makeTags(this.tpl), values)
         val commentText = makeComment(comment)
         return "\t${originName.fmtName()}\t$type$tag${commentText}\n"
+    }
+
+    private fun replaceVarInTag(tag:String, kv: Map<String,String>): String {
+        for(k in kv) {
+            tag.replace("$${k.key}", k.value)
+        }
+        return tag
     }
 
     override fun gen(sql: String): String? {
